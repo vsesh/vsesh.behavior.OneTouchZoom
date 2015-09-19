@@ -6,8 +6,9 @@ ymaps.modules.define('vsesh.behavior.OneTouchZoom', [
 	'collection.Item',
 	'behavior.storage',
 	'util.defineClass',
-	'util.math.areEqual'
-], function (provide, CollectionItem, behaviorStorage, defineClass, areEqual) {
+	'util.math.areEqual',
+	'map.action.Continuous'
+], function (provide, CollectionItem, behaviorStorage, defineClass, areEqual, ContinuousAction) {
 	var MOUSEDOWN_DELAY = 500;
 	var MOUSEDOWN_POSITIONS_DIFF = 30;
    /**
@@ -48,6 +49,8 @@ ymaps.modules.define('vsesh.behavior.OneTouchZoom', [
 						position: event.get('position'),
 						zoom: map.action.getCurrentState().zoom
 					};
+					this._action = new ContinuousAction();
+					map.action.execute(this._action);
 					map.events
 						.add('mousemove', this._onMouseMove, this)
 						.add('mouseup', this._onMouseUp, this)
@@ -62,18 +65,20 @@ ymaps.modules.define('vsesh.behavior.OneTouchZoom', [
 				var newZoom = this._startState.zoom + ((this._startState.position[1] - event.get('position')[1]) / this.options.get('sensitivity', 100));
 				var currentState = map.action.getCurrentState();
 				var oldZoom = currentState.zoom;
-				map.setGlobalPixelCenter(
-					fixedToCenter(
+				this._action.tick({
+					globalPixelCenter: fixedToCenter(
 						currentState.globalPixelCenter,
 						map.converter.pageToGlobal(this._lastMouseDownPosition, oldZoom),
 						Math.pow(2, newZoom - oldZoom)
-					), 
-					newZoom
-				);
+					),
+					zoom: newZoom,
+					duration: 0
+				});
 				this._preventDefaultCallback(event);
 			},
 
 			_onMouseUp: function (event) {
+				this._action.end();
 				this.getMap().events
 					.remove('mousemove', this._onMouseMove, this)
 					.remove('mouseup', this._onMouseUp, this);
