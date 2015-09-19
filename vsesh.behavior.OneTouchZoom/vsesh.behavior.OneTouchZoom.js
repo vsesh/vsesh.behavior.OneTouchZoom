@@ -16,7 +16,7 @@ ymaps.modules.define('vsesh.behavior.OneTouchZoom', [
      * @augments IBehavior
      * @param {Object} [options] Опции.
      * @param {Number} [options.sensitivity = 100] Чувствительность поведения.
-	 * На сколько пикселей пользователь должен сдвинуть указатель, чтобы измененить масштаб карты на один уровень масштаба.
+     * На сколько пикселей пользователь должен сдвинуть указатель, чтобы измененить масштаб карты на один уровень масштаба.
      */
 	var OneTouchBehavior = defineClass(function (options) {
 		OneTouchBehavior.superclass.constructor.call(this);
