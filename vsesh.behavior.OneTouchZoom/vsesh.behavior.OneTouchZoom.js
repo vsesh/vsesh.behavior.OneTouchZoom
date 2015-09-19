@@ -56,8 +56,6 @@ ymaps.modules.define('vsesh.behavior.OneTouchZoom', [
                         .add('mouseup', this._onMouseUp, this)
                         .once('click', this._preventDefaultCallback, this)
                         .once('dblclick', this._preventDefaultCallback, this);
-                    event.get('originalEvent').get('originalEvent');
-                    event.get('domEvent').callMethod('preventDefault');
                 }
                 this._lastMouseDownPosition = currentMouseDownPosition;
             },
